@@ -10,9 +10,15 @@ set(CMAKE_PREFIX_PATH "C:/msys64/ucrt64")
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
 add_executable(SFMLProject main.cpp
-        main.cpp)
+        main.cpp
+        DEFINITIONS.hpp
+        MainMenuState.cpp
+        State.hpp
+        Statemachine.cpp
+        Statemachine.hpp)
 
 target_link_libraries(SFMLProject PRIVATE
         SFML::Window
         SFML::System
+        SFML::Graphics
 )
