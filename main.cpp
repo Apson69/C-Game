@@ -2,6 +2,30 @@
 #include <SFML/Graphics.hpp>
 #include "DEFINITIONS.hpp"
 
+
+    //Tile Pattern Creattion
+    std::vector<sf::Sprite> patternmaker(const sf::Texture& light, const sf::Texture& dark) {
+        std::vector<sf::Sprite> tiles;
+        float posX = -105, posY = 80;
+        int pattern = 0;
+
+        for (int i = 0; i < 5; i++) {
+            posX = -105;
+            for (int j = 0; j < 10; j++) {
+                sf::Sprite sprite(pattern % 2 == 0 ? light : dark);
+                sprite.setScale({0.43f, 0.43f});
+                sprite.setPosition({posX, posY});
+                tiles.push_back(sprite);
+                pattern++;
+                posX += 105;
+            }
+            posY += 80;
+            pattern++;
+        }
+        return tiles;
+    }
+
+
 int main()
 {
 
@@ -48,7 +72,7 @@ int main()
     //MOde Menu List
     sf::Text TitleModeMenu1(font, "", 35);
     TitleModeMenu1.setFillColor(sf::Color::White);
-    TitleModeMenu1.setString("Classic");
+    TitleModeMenu1.setString("Classic Mode");
     TitleModeMenu1.setPosition({230.f, 150.f});
 
     sf::Text TitleModeMenu2(font, "", 35);
@@ -62,14 +86,71 @@ int main()
     TitleModeMenu3.setPosition({230.f, 350.f});
 
     //Classic Text
-    sf::Text ClassicText(font,"You Entered Classic Mode!!!!",30);
-    ClassicText.setFillColor(sf::Color::White);
-    ClassicText.setPosition({320.f, 350.f});
+    // sf::Text ClassicText(font,"You Entered Classic Mode!!!!",30);
+    // ClassicText.setFillColor(sf::Color::White);
+    // ClassicText.setPosition({320.f, 350.f});
 
     //Rapid Text
-    sf::Text RapidText(font,"You Entered Classic Mode!!!!",30);
-    RapidText.setFillColor(sf::Color::White);
-    RapidText.setPosition({320.f, 350.f});
+    // sf::Text RapidText(font,"You Entered Rapid Mode!!!!",30);
+    // RapidText.setFillColor(sf::Color::White);
+    // RapidText.setPosition({320.f, 350.f});
+
+
+
+        //Classic Mode Sprites
+
+        sf::Texture textureSideBush;
+        textureSideBush.loadFromFile(SideBush);
+
+        sf::Sprite bushleft(textureSideBush);
+        bushleft.setPosition({-58, 70});
+        bushleft.setScale({0.7,0.55});
+
+        sf::Sprite bushright(textureSideBush);
+        bushright.setScale({-0.7,0.55});
+        bushright.setPosition({915, 70});
+
+
+
+
+    sf::Texture textureLightGrass, textureDarkGrass;
+    textureLightGrass.loadFromFile(LightGrass);
+    textureDarkGrass.loadFromFile(DarkGrass);
+    auto grassTiles = patternmaker(textureLightGrass, textureDarkGrass);
+
+
+
+    //Rapid mode sprites
+        sf::Texture textureRapidBg;
+        textureRapidBg.loadFromFile(RapidBg);
+        sf::Sprite rapidBg(textureRapidBg);
+        rapidBg.setScale({0.42,0.36});
+
+
+
+    //
+    //
+    // sf::Texture textureStoneGrass;
+    // textureStoneGrass.loadFromFile(StoneGrass);
+    // sf::Sprite spriteStoneGrass(textureStoneGrass);
+    //
+    //
+    //
+    // textureSideBush.loadFromFile(SideBush);
+    // sf::Sprite spriteSideBush(textureSideBush);
+
+    //Classic Background
+    // sf::Texture textureBackground;
+    // textureBackground.loadFromFile(Background);
+    // sf::Sprite spriteBackground(textureBackground);
+    //
+    // sf::Vector2u textureSize = textureBackground.getSize();
+    // spriteBackground.setScale({
+    //     800.f / textureSize.x,
+    //     550.f / textureSize.y
+    // });
+
+
 
 
 
@@ -95,7 +176,7 @@ int main()
         {
 
             //Closing Event
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>() )
             {
                 window.close();
             }
@@ -104,8 +185,15 @@ int main()
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
                 //Returning to Title Screen on Backsapce
-                if (keyPressed->code == sf::Keyboard::Key::Backspace) {
+                if (keyPressed->code == sf::Keyboard::Key::Backspace)
+                {
                     currentState=State::Title;
+                }
+
+                //Exiting when ESCAPE is pressed on Title Screen
+                if (keyPressed->code==sf::Keyboard::Key::Escape && currentState==State::Title)
+                {
+                    window.close();
                 }
 
 
@@ -172,20 +260,22 @@ int main()
         switch (currentState)
         {
         case State::Title:
-            window.draw(TitleText);
-                window.draw(TitleModeMenu1);
-                window.draw(TitleModeMenu2);
-                window.draw(TitleModeMenu3);
-            window.draw(TitleTextMode);
-            window.draw(TitleModeMenuSelector);
+            window.draw(TitleText);                 //Bheda TITLE
+                window.draw(TitleModeMenu1);        //Classic Mode
+                window.draw(TitleModeMenu2);        //Rapid Mode
+                window.draw(TitleModeMenu3);        //Exit
+            window.draw(TitleTextMode);             //Bottom Text
+            window.draw(TitleModeMenuSelector);     // ">" Selector
             break;
 
         case State::Classic:
-                window.draw(ClassicText);
+                for (auto& tile : grassTiles) window.draw(tile);    //Tile creation
+                window.draw(bushleft);                                     //Left Bush
+                window.draw(bushright);                                    //Right Bush
             break;
 
         case State::Rapid:
-                window.draw(RapidText);
+                window.draw(rapidBg);
             break;
 
         case State::Pause:
@@ -195,6 +285,7 @@ int main()
             break;
         }
 
+        //Display Everything Drawn
         window.display();
     }
 
