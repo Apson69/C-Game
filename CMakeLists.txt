@@ -9,7 +9,7 @@ set(CMAKE_PREFIX_PATH "C:/msys64/ucrt64")
 
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
-add_executable(SFMLProject
+add_executable(SFMLProject WIN32
         main.cpp
         DEFINITIONS.hpp
         app.rc
