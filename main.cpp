@@ -1,39 +1,38 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "DEFINITIONS.hpp"
+#include "LaneManager.hpp"
+#include "Sheep.hpp"
+#include "RapidMode.hpp"
 
+// Tile Pattern Creation
+std::vector<sf::Sprite> patternmaker(const sf::Texture& light, const sf::Texture& dark) {
+    std::vector<sf::Sprite> tiles;
+    float posX = -105.f, posY = 80.f;
+    int pattern = 0;
 
-    //Tile Pattern Creattion
-    std::vector<sf::Sprite> patternmaker(const sf::Texture& light, const sf::Texture& dark) {
-        std::vector<sf::Sprite> tiles;
-        float posX = -105, posY = 80;
-        int pattern = 0;
-
-        for (int i = 0; i < 5; i++) {
-            posX = -105;
-            for (int j = 0; j < 10; j++) {
-                sf::Sprite sprite(pattern % 2 == 0 ? light : dark);
-                sprite.setScale({0.43f, 0.43f});
-                sprite.setPosition({posX, posY});
-                tiles.push_back(sprite);
-                pattern++;
-                posX += 105;
-            }
-            posY += 80;
+    for (int i = 0; i < 5; i++) {
+        posX = -105.f;
+        for (int j = 0; j < 10; j++) {
+            sf::Sprite sprite(pattern % 2 == 0 ? light : dark);
+            sprite.setScale({0.43f, 0.43f});
+            sprite.setPosition({posX, posY});
+            tiles.push_back(sprite);
             pattern++;
+            posX += 105.f;
         }
-        return tiles;
+        posY += 80.f;
+        pattern++;
     }
-
+    return tiles;
+}
 
 int main()
 {
-
     // const int FPS=60;
     // const int WindowLength=800;
     // const int WindowBreadth=550;
     // const char FontPath[]="C:/Users/apson/Documents/CPP/font/Virgil.ttf";
-
 
     int ModeNumber = 0;
 
@@ -41,15 +40,14 @@ int main()
     sf::Font font;
     if (!font.openFromFile(FontPath))
     {
-        std::cout << "Failed to load font\n";
+        std::cout << "Failed to load font: " << FontPath << std::endl;
         return -1;
     }
 
     // Window
     sf::RenderWindow window(
-        sf::VideoMode({WindowLength, WindowBreadth}),"Bheda"
+        sf::VideoMode({WindowLength, WindowBreadth}), "Bheda"
     );
-
 
     window.setFramerateLimit(FPS);
 
@@ -58,18 +56,16 @@ int main()
     TitleText.setFillColor(sf::Color::White);
     TitleText.setPosition({320.f, 35.f});
 
-
     // Bottom Mode Text
     sf::Text TitleTextMode(font, "", 25);
     TitleTextMode.setFillColor(sf::Color::White);
     TitleTextMode.setPosition({190.f, 500.f});
 
-    //Mode Menu Selector (>)
+    // Mode Menu Selector (>)
     sf::Text TitleModeMenuSelector(font, "", 35);
     TitleModeMenuSelector.setFillColor(sf::Color::White);
 
-
-    //MOde Menu List
+    // Mode Menu List
     sf::Text TitleModeMenu1(font, "", 35);
     TitleModeMenu1.setFillColor(sf::Color::White);
     TitleModeMenu1.setString("Classic Mode");
@@ -85,76 +81,43 @@ int main()
     TitleModeMenu3.setString("Exit");
     TitleModeMenu3.setPosition({230.f, 350.f});
 
-    //Classic Text
-    // sf::Text ClassicText(font,"You Entered Classic Mode!!!!",30);
-    // ClassicText.setFillColor(sf::Color::White);
-    // ClassicText.setPosition({320.f, 350.f});
+    // Classic Mode Sprites
+    sf::Texture textureSideBush;
+    textureSideBush.loadFromFile(SideBush);
 
-    //Rapid Text
-    // sf::Text RapidText(font,"You Entered Rapid Mode!!!!",30);
-    // RapidText.setFillColor(sf::Color::White);
-    // RapidText.setPosition({320.f, 350.f});
+    sf::Sprite bushleft(textureSideBush);
+    bushleft.setPosition({-58.f, 70.f});
+    bushleft.setScale({0.7f, 0.55f});
 
-
-
-        //Classic Mode Sprites
-
-        sf::Texture textureSideBush;
-        textureSideBush.loadFromFile(SideBush);
-
-        sf::Sprite bushleft(textureSideBush);
-        bushleft.setPosition({-58, 70});
-        bushleft.setScale({0.7,0.55});
-
-        sf::Sprite bushright(textureSideBush);
-        bushright.setScale({-0.7,0.55});
-        bushright.setPosition({915, 70});
-
-
-
+    sf::Sprite bushright(textureSideBush);
+    bushright.setScale({-0.7f, 0.55f});
+    bushright.setPosition({915.f, 70.f});
 
     sf::Texture textureLightGrass, textureDarkGrass;
     textureLightGrass.loadFromFile(LightGrass);
     textureDarkGrass.loadFromFile(DarkGrass);
     auto grassTiles = patternmaker(textureLightGrass, textureDarkGrass);
 
+    // Rapid mode sprites
+    sf::Texture textureRapidBg;
+    textureRapidBg.loadFromFile(RapidBg);
+    sf::Sprite rapidBg(textureRapidBg);
+    rapidBg.setScale({0.42f, 0.36f});
+
+    // Game Logic Setup
+    sf::Clock deltaClock;
+    LaneManager laneManager;
+    int selectedLane = 2; // Default to middle lane (0 to 4)
+
+    sf::Texture whiteSheepTexture, blackSheepTexture;
+    whiteSheepTexture.loadFromFile(WhiteSheep);
+    blackSheepTexture.loadFromFile(BlackSheep);
 
 
-    //Rapid mode sprites
-        sf::Texture textureRapidBg;
-        textureRapidBg.loadFromFile(RapidBg);
-        sf::Sprite rapidBg(textureRapidBg);
-        rapidBg.setScale({0.42,0.36});
+    // Initialize Rapid Mode Manager
+    RapidMode rapidMode(whiteSheepTexture, blackSheepTexture);
 
-
-
-    //
-    //
-    // sf::Texture textureStoneGrass;
-    // textureStoneGrass.loadFromFile(StoneGrass);
-    // sf::Sprite spriteStoneGrass(textureStoneGrass);
-    //
-    //
-    //
-    // textureSideBush.loadFromFile(SideBush);
-    // sf::Sprite spriteSideBush(textureSideBush);
-
-    //Classic Background
-    // sf::Texture textureBackground;
-    // textureBackground.loadFromFile(Background);
-    // sf::Sprite spriteBackground(textureBackground);
-    //
-    // sf::Vector2u textureSize = textureBackground.getSize();
-    // spriteBackground.setScale({
-    //     800.f / textureSize.x,
-    //     550.f / textureSize.y
-    // });
-
-
-
-
-
-    //States of Game
+    // States of Game
     enum class State
     {
         Title,
@@ -164,42 +127,42 @@ int main()
         Resume
     };
 
-    //Default State
+    // Default State
     State currentState = State::Title;
 
-
-    //Game Loop
+    // Game Loop
     while (window.isOpen())
     {
-        //Event handling
+        // 1. Calculate Frame Delta Time
+        float dt = deltaClock.restart().asSeconds();
+
+        // 2. Event handling
         while (const std::optional event = window.pollEvent())
         {
-
-            //Closing Event
-            if (event->is<sf::Event::Closed>() )
+            // Closing Event
+            if (event->is<sf::Event::Closed>())
             {
                 window.close();
             }
 
-            //Key Pressing Recorder
+            // Key Pressing Recorder
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
-                //Returning to Title Screen on Backsapce
+                // Returning to Title Screen on Backspace
                 if (keyPressed->code == sf::Keyboard::Key::Backspace)
                 {
-                    currentState=State::Title;
+                    currentState = State::Title;
                 }
 
-                //Exiting when ESCAPE is pressed on Title Screen
-                if (keyPressed->code==sf::Keyboard::Key::Escape && currentState==State::Title)
+                // Exiting when ESCAPE is pressed on Title Screen
+                if (keyPressed->code == sf::Keyboard::Key::Escape && currentState == State::Title)
                 {
                     window.close();
                 }
 
-
+                // Title Screen Controls
                 if (currentState == State::Title)
                 {
-                    // Move through menu
                     if (keyPressed->code == sf::Keyboard::Key::Down)
                     {
                         ModeNumber = (ModeNumber + 1) % 3;
@@ -210,7 +173,6 @@ int main()
                         ModeNumber = (ModeNumber + 2) % 3;
                     }
 
-                    // Select menu option
                     if (keyPressed->code == sf::Keyboard::Key::Enter)
                     {
                         switch (ModeNumber)
@@ -218,64 +180,124 @@ int main()
                         case 0:
                             currentState = State::Classic;
                             break;
-
                         case 1:
                             currentState = State::Rapid;
+                                rapidMode.reset();
                             break;
-
                         case 2:
                             window.close();
                             break;
                         }
                     }
                 }
+
+                // Classic Mode Gameplay Controls
+                else if (currentState == State::Classic)
+                {
+                    // Select Lane (W/S or Up/Down)
+                    if (keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up)
+                    {
+                        selectedLane = (selectedLane + 4) % 5;
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::S || keyPressed->code == sf::Keyboard::Key::Down)
+                    {
+                        selectedLane = (selectedLane + 1) % 5;
+                    }
+
+                    // Spawn White Sheep (Keys 1-4)
+                    if (keyPressed->code == sf::Keyboard::Key::Num1) {
+                        laneManager.spawnSheep(Team::White, SheepSize::Small, selectedLane, whiteSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::Num2) {
+                        laneManager.spawnSheep(Team::White, SheepSize::Medium, selectedLane, whiteSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::Num3) {
+                        laneManager.spawnSheep(Team::White, SheepSize::Large, selectedLane, whiteSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::Num4) {
+                        laneManager.spawnSheep(Team::White, SheepSize::Giant, selectedLane, whiteSheepTexture);
+                    }
+
+                    // Spawn Black Sheep (Keys I, O, P, L for testing collision)
+                    if (keyPressed->code == sf::Keyboard::Key::I) {
+                        laneManager.spawnSheep(Team::Black, SheepSize::Small, selectedLane, blackSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::O) {
+                        laneManager.spawnSheep(Team::Black, SheepSize::Medium, selectedLane, blackSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::P) {
+                        laneManager.spawnSheep(Team::Black, SheepSize::Large, selectedLane, blackSheepTexture);
+                    }
+                    if (keyPressed->code == sf::Keyboard::Key::L) {
+                        laneManager.spawnSheep(Team::Black, SheepSize::Giant, selectedLane, blackSheepTexture);
+                    }
+                }
+                else if (currentState == State::Rapid)
+                {
+                    // Pass keypresses (A / L / R) to Rapid Mode
+                    rapidMode.handleKeyPress(keyPressed->code);
+                }
             }
         }
 
-        // Update menu text
+        // 3. Update Menu Text
         switch (ModeNumber)
         {
         case 0:
             TitleTextMode.setString("Press Enter to Play Classic Mode");
             TitleModeMenuSelector.setString(">");
-                TitleModeMenuSelector.setPosition({205.f, 150.f});
+            TitleModeMenuSelector.setPosition({205.f, 150.f});
             break;
 
         case 1:
             TitleTextMode.setString("Press Enter to Play Rapid Mode");
-                TitleModeMenuSelector.setString(">");
-                TitleModeMenuSelector.setPosition({205.f, 250.f});
+            TitleModeMenuSelector.setString(">");
+            TitleModeMenuSelector.setPosition({205.f, 250.f});
             break;
 
         case 2:
             TitleTextMode.setString("Press Enter to Exit");
             TitleModeMenuSelector.setString(">");
-                TitleModeMenuSelector.setPosition({205.f, 350.f});
+            TitleModeMenuSelector.setPosition({205.f, 350.f});
             break;
         }
 
-        // Draw
+        // 4. Update Game Logic
+        if (currentState == State::Classic)
+        {
+            laneManager.update(dt);
+
+        }
+        else if (currentState == State::Rapid)
+        {
+            rapidMode.update(dt); //  TICK-DOWNS THE COUNTDOWN TIMER!
+        }
+
+        // 5. Draw Frame
         window.clear();
 
         switch (currentState)
         {
         case State::Title:
-            window.draw(TitleText);                 //Bheda TITLE
-                window.draw(TitleModeMenu1);        //Classic Mode
-                window.draw(TitleModeMenu2);        //Rapid Mode
-                window.draw(TitleModeMenu3);        //Exit
-            window.draw(TitleTextMode);             //Bottom Text
+            window.draw(TitleText);                 // Bheda TITLE
+            window.draw(TitleModeMenu1);            // Classic Mode
+            window.draw(TitleModeMenu2);            // Rapid Mode
+            window.draw(TitleModeMenu3);            // Exit
+            window.draw(TitleTextMode);             // Bottom Text
             window.draw(TitleModeMenuSelector);     // ">" Selector
             break;
 
         case State::Classic:
-                for (auto& tile : grassTiles) window.draw(tile);    //Tile creation
-                window.draw(bushleft);                                     //Left Bush
-                window.draw(bushright);                                    //Right Bush
+            for (auto& tile : grassTiles) window.draw(tile); // Grass Tiles
+                laneManager.draw(window);                        // Draw Sheep
+            window.draw(bushleft);                           // Left Bush
+            window.draw(bushright);                          // Right Bush
+
             break;
 
         case State::Rapid:
-                window.draw(rapidBg);
+            window.draw(rapidBg);
+                rapidMode.draw(window, font);      // Draws countdown, sheep, and winner announcement
             break;
 
         case State::Pause:
@@ -285,7 +307,7 @@ int main()
             break;
         }
 
-        //Display Everything Drawn
+        // 6. Display Everything Drawn
         window.display();
     }
 

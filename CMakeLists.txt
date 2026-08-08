@@ -13,6 +13,9 @@ add_executable(SFMLProject WIN32
         main.cpp
         DEFINITIONS.hpp
         app.rc
+        sheep.hpp
+        LaneManager.hpp
+        RapidMode.hpp
 )
 
 target_link_libraries(SFMLProject PRIVATE
