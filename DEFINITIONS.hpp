@@ -5,19 +5,16 @@
 # define  WindowLength 849
 # define  WindowBreadth 550
 
-# define  FontPath  "C:/Users/apson/Documents/CPP/font/Virgil.ttf"
-
-# define DarkGrass  "C:/Users/apson/Documents/CPP/sprites/dark_grass.png"
-# define LightGrass "C:/Users/apson/Documents/CPP/sprites/light_grass.png"
-# define StoneGrass "C:/Users/apson/Documents/CPP/sprites/stone_tile.png"
-# define SideBush   "C:/Users/apson/Documents/CPP/sprites/side_bushes.png"
-#define Background  "C:/Users/apson/Documents/CPP/sprites/bg.png"
-#define  RapidBg    "C:/Users/apson/Documents/CPP/sprites/background_rapid.png"
-
-#define WhiteSheep "C:/Users/apson/Documents/CPP/sprites/white_sheep.png"
-#define BlackSheep "C:/Users/apson/Documents/CPP/sprites/black_sheep.png"
-
-#define GoButton "C:/Users/apson/Documents/CPP/sprites/go_button.png"
+# define  FontPath  "assets/font/Virgil.ttf"
+# define DarkGrass  "assets/sprites/dark_grass.png"
+# define LightGrass "assets/sprites/light_grass.png"
+# define StoneGrass "assets/sprites/stone_tile.png"
+# define SideBush   "assets/sprites/side_bushes.png"
+#define Background  "assets/sprites/bg.png"
+#define  RapidBg    "assets/sprites/background_rapid.png"
+#define WhiteSheep  "assets/sprites/white_sheep.png"
+#define BlackSheep  "assets/sprites/black_sheep.png"
+#define GoButton    "assets/sprites/go_button.png"
 
 #define TITLE "Bheda"
 
