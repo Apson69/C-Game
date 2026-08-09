@@ -24,18 +24,18 @@ public:
         switch (s) {
             case SheepSize::Small:  baseSpeed = 120.f; break;
             case SheepSize::Medium: baseSpeed = 115.f; break;
-            case SheepSize::Large:  baseSpeed = 110.f;  break;
-            case SheepSize::Giant:  baseSpeed = 105.f;  break;
+            case SheepSize::Large:  baseSpeed = 110.f; break;
+            case SheepSize::Giant:  baseSpeed = 105.f; break;
         }
         speed = (team == Team::White) ? baseSpeed : -baseSpeed;
 
         // 2. Visual scale by size
-        float scaleFactor = 0.3f;
+        float scaleFactor = 0.1f;
         switch (s) {
-            case SheepSize::Small:  scaleFactor = 0.1f; break;
-            case SheepSize::Medium: scaleFactor = 0.12f; break;
-            case SheepSize::Large:  scaleFactor = 0.14f; break;
-            case SheepSize::Giant:  scaleFactor = 0.16f; break;
+            case SheepSize::Small:  scaleFactor = 0.07f; break;
+            case SheepSize::Medium: scaleFactor = 0.09f; break;
+            case SheepSize::Large:  scaleFactor = 0.10f; break;
+            case SheepSize::Giant:  scaleFactor = 0.12f; break;
         }
 
         // Apply scale (flip horizontally for Black team)
@@ -47,7 +47,7 @@ public:
 
         // Center origin so sprite flips and scales smoothly
         sf::FloatRect bounds = sprite.getLocalBounds();
-        sprite.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
+        sprite.setOrigin({ bounds.position.x + bounds.size.x / 2.f, bounds.position.y + bounds.size.y / 2.f });
 
         position = { startX, startY };
         sprite.setPosition(position);

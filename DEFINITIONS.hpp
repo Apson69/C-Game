@@ -17,5 +17,7 @@
 #define WhiteSheep "C:/Users/apson/Documents/CPP/sprites/white_sheep.png"
 #define BlackSheep "C:/Users/apson/Documents/CPP/sprites/black_sheep.png"
 
+#define GoButton "C:/Users/apson/Documents/CPP/sprites/go_button.png"
+
 #define TITLE "Bheda"
 

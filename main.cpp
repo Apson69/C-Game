@@ -194,42 +194,29 @@ int main()
                 // Classic Mode Gameplay Controls
                 else if (currentState == State::Classic)
                 {
-                    // Select Lane (W/S or Up/Down)
-                    if (keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up)
-                    {
-                        selectedLane = (selectedLane + 4) % 5;
+                    // --- PLAYER 1 (WHITE / LEFT SIDE) ---
+                    // Select Lane: W / S
+                    if (keyPressed->code == sf::Keyboard::Key::W) {
+                        laneManager.p1SelectedLane = (laneManager.p1SelectedLane + 4) % 5;
                     }
-                    if (keyPressed->code == sf::Keyboard::Key::S || keyPressed->code == sf::Keyboard::Key::Down)
-                    {
-                        selectedLane = (selectedLane + 1) % 5;
+                    if (keyPressed->code == sf::Keyboard::Key::S) {
+                        laneManager.p1SelectedLane = (laneManager.p1SelectedLane + 1) % 5;
                     }
-
-                    // Spawn White Sheep (Keys 1-4)
-                    if (keyPressed->code == sf::Keyboard::Key::Num1) {
-                        laneManager.spawnSheep(Team::White, SheepSize::Small, selectedLane, whiteSheepTexture);
+                    // Launch Sheep: A
+                    if (keyPressed->code == sf::Keyboard::Key::A) {
+                        laneManager.tryLaunchP1(whiteSheepTexture);
                     }
-                    if (keyPressed->code == sf::Keyboard::Key::Num2) {
-                        laneManager.spawnSheep(Team::White, SheepSize::Medium, selectedLane, whiteSheepTexture);
+                    // --- PLAYER 2 (BLACK / RIGHT SIDE) ---
+                    // Select Lane: Up Arrow / Down Arrow
+                    if (keyPressed->code == sf::Keyboard::Key::Up) {
+                        laneManager.p2SelectedLane = (laneManager.p2SelectedLane + 4) % 5;
                     }
-                    if (keyPressed->code == sf::Keyboard::Key::Num3) {
-                        laneManager.spawnSheep(Team::White, SheepSize::Large, selectedLane, whiteSheepTexture);
+                    if (keyPressed->code == sf::Keyboard::Key::Down) {
+                        laneManager.p2SelectedLane = (laneManager.p2SelectedLane + 1) % 5;
                     }
-                    if (keyPressed->code == sf::Keyboard::Key::Num4) {
-                        laneManager.spawnSheep(Team::White, SheepSize::Giant, selectedLane, whiteSheepTexture);
-                    }
-
-                    // Spawn Black Sheep (Keys I, O, P, L for testing collision)
-                    if (keyPressed->code == sf::Keyboard::Key::I) {
-                        laneManager.spawnSheep(Team::Black, SheepSize::Small, selectedLane, blackSheepTexture);
-                    }
-                    if (keyPressed->code == sf::Keyboard::Key::O) {
-                        laneManager.spawnSheep(Team::Black, SheepSize::Medium, selectedLane, blackSheepTexture);
-                    }
-                    if (keyPressed->code == sf::Keyboard::Key::P) {
-                        laneManager.spawnSheep(Team::Black, SheepSize::Large, selectedLane, blackSheepTexture);
-                    }
+                    // Launch Sheep: L
                     if (keyPressed->code == sf::Keyboard::Key::L) {
-                        laneManager.spawnSheep(Team::Black, SheepSize::Giant, selectedLane, blackSheepTexture);
+                        laneManager.tryLaunchP2(blackSheepTexture);
                     }
                 }
                 else if (currentState == State::Rapid)
@@ -292,6 +279,8 @@ int main()
                 laneManager.draw(window);                        // Draw Sheep
             window.draw(bushleft);                           // Left Bush
             window.draw(bushright);                          // Right Bush
+                // Draw Upcoming Queue & Cooldown Ring HUD
+                laneManager.drawHUD(window, whiteSheepTexture, blackSheepTexture);
 
             break;
 
